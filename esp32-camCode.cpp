@@ -122,8 +122,8 @@ const char* password = "gogo2012";
 
 #define MOTOR_1_PIN_1    14
 #define MOTOR_1_PIN_2    15
-#define MOTOR_2_PIN_1    12
-#define MOTOR_2_PIN_2    13
+#define MOTOR_2_PIN_1    13
+#define MOTOR_2_PIN_2    12
 
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
@@ -134,7 +134,7 @@ httpd_handle_t stream_httpd = NULL;
 
 static const char PROGMEM INDEX_HTML[] = R"rawliteral(
 <html>
-   <head>
+  <head>
     <title>Gogo's ESP32-CAM Robot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -167,21 +167,23 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
 }
 
 .up {
-  display: flex;
+  display: block;
   flex-direction: row;
   gap: 2em;
 }
 
 .down {
-  display: flex;
+  display: block;
   flex-direction: row;
   gap: 2em;
 }
+@media (min-width: 300px) {
 .card{
+  text-align:center;
   margin:1.5em;
   padding:3em;
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   outline: none;
   border: none;
   background: white;
@@ -189,34 +191,41 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
   transition: .2s ease-in-out;
 }
 .card1 {
+  margin-bottom:50px;
   transform: rotate(45deg);
   background-color:#FFC2D1;
   border-radius: 90px 5px 5px 5px;
 }
 
 .card2 {
-  margin-right:100px;
+  margin-right:50px;
   transform: rotate(230deg);
   background-color:#FFC2D1;
   border-radius: 5px 90px 5px 5px;
 }
 
 .card3 {
-  margin-left:100px;
+  margin-left:50px;
   transform: rotate(220deg);
   background-color:#FFC2D1;
   border-radius: 5px 5px 5px 90px;
 }
 
 .card4 {
+  margin-top:50px;
   transform: rotate(50deg);
   background-color:#FFC2D1;
   border-radius: 5px 5px 90px 5px;
 }
 .card5{
+  height:130px;
+  width:130px;
+  text-align:center;
+  color: white;
+  font-size:17px;
   border-radius:100%;
   background-color:#FFC2D1;
-  border-radius: 5px 5px 90px 5px;
+  border-radius: 520px 520px 520px 520px;
 }
 
  .card:hover { 
@@ -248,49 +257,72 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
   scale: 1.1;
   background-color: #FF8FAB;
 }
+  
+.card5:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: #FF8FAB;
+}
 #photo{
-  margin-left:70px;
+ 
+ text-align:center;
 }
 h1{
-margin-left:70px;  
+text-align:center; 
+ font-family:sofia;
 }
-
+}
     </style>
   </head>
-  <body>
-    <h1>Gogo's ESP32-CAM Robot</h1>
-    <img src="" id="photo" >
-    
-<div class="main">
-  <div class="up">
-    <table>
-      <tr><td colspan="3" align="center">
-        <button class="card card1" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');"></button> 
-</td></tr>
-      
-      <tr><td align="center"><button class="card card2" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');"></button></td><td align="center">
-        </div>
+ <body>
+  <h1>Gogo's ESP32-CAM Robot</h1>
+  <img src="" id="photo">
 
-<!--         <button class="button card card5" onmousedown="toggleCheckbox('stop');" ontouchstart="toggleCheckbox('stop');">Stop</button></td><td align="center"> -->
-        
-     <div class="down">
-        <button class="card card3" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');"></button></td></tr>
-      <tr><td colspan="3" align="center">
-        
-        <button class="card card4" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');"></button></td></tr> 
+  <div class="main">
+    <div class="up">
+      <table>
+        <tr>
+          <td colspan="3" align="center">
+            <button class="card card1" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">F</button>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center"><button class="card card2" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">L</button></td>
+          <td align="center">
+    </div>
+
+    <!--         <button class="button card card5" onmousedown="toggleCheckbox('stop');" ontouchstart="toggleCheckbox('stop');">Stop</button></td><td align="center"> -->
+    <button class="button card card5" onmousedown="toggleCheckbox('stop');" ontouchstart="toggleCheckbox('stop');">STOP</button></td>
+    <td align="center">
+
+      <div class="down">
+        <button class="card card3" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">R</button>
+    </td>
+    </tr>
+    <tr>
+      <td colspan="3" align="center">
+
+        <button class="card card4" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');" onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">B</button>
+      </td>
+    </tr>
+
+    <!--      <button class="button card card5" onmousedown="toggleCheckbox('stop');" ontouchstart="toggleCheckbox('stop');">Stop</button></td><td align="center"> -->
+
   </div>
-    </table>
+  </table>
   </div>
-    
-   <script>
-   function toggleCheckbox(x) {
-     var xhr = new XMLHttpRequest();
-     xhr.open("GET", "/action?go=" + x, true);
-     xhr.send();
-   }
-   window.onload = document.getElementById("photo").src = window.location.href.slice(0, -1) + ":81/stream";
+
+  <script>
+    function toggleCheckbox(x) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/action?go=" + x, true);
+      xhr.send();
+    }
+    window.onload = document.getElementById("photo").src = window.location.href.slice(0, -1) + ":81/stream";
   </script>
-  </body>
+</body>
+
 </html>
 )rawliteral";
 
